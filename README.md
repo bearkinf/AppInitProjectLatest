@@ -317,8 +317,7 @@ android {
         debug {
         buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
         }
-    }    
-    
+    }        
 }    
 ~~~
 
@@ -338,8 +337,7 @@ android {
         debug {
             manifestPlaceholders = [appLabel: "debugApp"]
         }
-    }    
-    
+    }       
 }
 ~~~
 
@@ -351,7 +349,4 @@ gradle 설정.
 앱 빌드(디버그,릴리즈) 설정.
 
 dependencies 추가.    
-
-
-
-
+ 
