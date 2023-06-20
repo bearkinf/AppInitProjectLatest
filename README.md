@@ -255,9 +255,97 @@ dependencies {
 }
 ~~~
 
-순서...   
-프로젝트 생성.   
-sdk 버전 별 처리.
+## multiDexEnabled true
+
+- 메서드가 64K개를 초과하는 앱에 관해 멀티덱스 사용 설정
+- https://developer.android.com/studio/build/multidex?hl=ko
+
+~~~ kotlin
+android {
+    ...
+    
+    defaultConfig {
+        .....     
+        multiDexEnabled true
+    }
+}    
+~~~
+
+## 앱 파일 빌드 이름 생성
+
+- app/build.gradle 안 android{} 구문안에 삽입
+
+~~~ kotlin
+    applicationVariants.all { variant ->
+
+        variant.outputs.all {
+            // def date = new Date()
+            def formatterDayDate = new Date().format('yyyyMMdd')
+            outputFileName = "${parent.project.getName()}-v${variant.versionName}-${formatterDayDate}-${variant.buildType.name}.apk"
+            // parent.project.getName() = rootProject.name() //settings.gradle 안에 있음.
+            // -v${variant.versionName} = android{ defaultConfig{}} 안에 versionName
+            // formatteDaydDate = def 파일 변수 이름.
+            // variant.buildType.name = android{ buildTpes{ }} 안에 빌드되는 타입이름.
+     
+        }
+    }
+~~~
+
+- run 과 build-> Rebuild Project 할때 위치가 다르다.
+- run : app/build/intermediates/apk/debug/파일이름.apk
+- Rebuild Project : app/build/outputs/apk/debug/파일이름.apk
+- 안드로이드 에 apk 설치할때 run 에 만들어진 파일은 설치가 안된다.
+
+## 앱 빌드 타입별 환경 설정.
+
+- Build Variants 에서 빌드 타입을 변경할수 있다.
+
+### 빌드 타입별 서버 정보 변경
+
+- buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
+- 빌드 타입별로 필요한 환경변수들을 넣을수있다.(public static class 대체 가능.)
+
+~~~ kotlin
+android {
+    ...
+    buildTypes {
+    
+        release {
+        buildConfigField "String", "BASE_URL", "\"https://www.naver.com\""
+        }
+        
+        debug {
+        buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
+        }
+    }    
+    
+}    
+~~~
+
+### 빌드 타입별 앱 이름 변경
+
+- AndroidMeifest.xml 안에 android:label="${applicationLabel}" 변경
+
+~~~ kotlin
+android {
+    ...
+    buildTypes {
+    
+        release {
+            manifestPlaceholders = [appLabel: "releaseApp"]
+        }
+        
+        debug {
+            manifestPlaceholders = [appLabel: "debugApp"]
+        }
+    }    
+    
+}
+~~~
+
+compileSdk, targetSdk, minSdk
+
+순서...
 
 gradle 설정.   
 앱 빌드(디버그,릴리즈) 설정.

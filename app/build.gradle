@@ -15,12 +15,31 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 빌드 별 서버 주소 변경.
+            buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
+
+            // 빌드별 앱 이름 변경.
+            manifestPlaceholders = [appLabel: "releaseApp"]
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            applicationIdSuffix '.test'
+            signingConfig signingConfigs.debug
+
+            // 빌드 별 서버 주소 변경.
+            // BuildConfig 를  사용하기 위해선 buildFeatures{ buildConfig true} 해야한다.
+            buildConfigField "String", "BASE_URL", "\"https://www.naver.com\""
+            // 빌드별 앱 이름 변경.
+            manifestPlaceholders = [appLabel: "debugApp"]
         }
     }
     compileOptions {
@@ -29,6 +48,27 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+
+    applicationVariants.all { variant ->
+
+        variant.outputs.all {
+            // def date = new Date()
+            def formatterDayDate = new Date().format('yyyyMMdd')
+            outputFileName = "${parent.project.getName()}-v${variant.versionName}-${formatterDayDate}-${variant.buildType.name}.apk"
+            // parent.project.getName() = rootProject.name() //settings.gradle 안에 있음.
+            // -v${variant.versionName} = android{ defaultConfig{}} 안에 versionName
+            // formatterDayDate = def 파일 변수 이름.
+            // variant.buildType.name = android{ buildTpes{ }} 안에 빌드되는 타입이름.
+
+        }
+    }
+
+    buildFeatures {
+        // 파일 생성.
+        buildConfig true
+
     }
 }
 
