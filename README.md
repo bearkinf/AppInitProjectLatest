@@ -1,3 +1,19 @@
+- [Android App Build Description Project](#android-app-build-description-project)
+    - [최초 프로젝트 생성](#최초-프로젝트-생성)
+        - [root/ .gitignore](#root-gitignore)
+        - [root/settings.gradle](#rootsettingsgradle)
+        - [root/build.gradle](#rootbuildgradle)
+        - [root/app/build.gradle](#rootappbuildgradle)
+    - [multiDexEnabled true](#multidexenabled-true)
+    - [앱 파일 빌드 이름 생성](#앱-파일-빌드-이름-생성)
+    - [앱 빌드 타입별 환경 설정.](#앱-빌드-타입별-환경-설정)
+        - [buildConfig 파일 생성.](#buildconfig-파일-생성)
+        - [빌드 타입별 서버 정보 변경](#빌드-타입별-서버-정보-변경)
+        - [빌드 타입별 앱 이름 변경](#빌드-타입별-앱-이름-변경)
+        - [Dependencies add](#dependencies-add)
+            - [root/app/build.gradle](#rootappbuildgradle-1)
+            - [Firebase 구성 파일 추가](#firebase-구성-파일-추가)
+
 # Android App Build Description Project
 
 ---
@@ -206,7 +222,7 @@ plugins {
 }
 ~~~
 
-### app/build.gradle
+### root/app/build.gradle
 
 ~~~ kotlin
 plugins {
@@ -263,9 +279,8 @@ dependencies {
 ~~~ kotlin
 android {
     ...
-    
     defaultConfig {
-        .....     
+        ...     
         multiDexEnabled true
     }
 }    
@@ -273,9 +288,11 @@ android {
 
 ## 앱 파일 빌드 이름 생성
 
-- app/build.gradle 안 android{} 구문안에 삽입
+- root/app/build.gradle 안 android{} 구문안에 삽입
 
 ~~~ kotlin
+android {
+    ...
     applicationVariants.all { variant ->
 
         variant.outputs.all {
@@ -289,21 +306,43 @@ android {
      
         }
     }
+}    
 ~~~
 
 - run 과 build-> Rebuild Project 할때 위치가 다르다.
-- run : app/build/intermediates/apk/debug/파일이름.apk
-- Rebuild Project : app/build/outputs/apk/debug/파일이름.apk
+- run : root/app/build/intermediates/apk/debug/파일이름.apk
+- Rebuild Project : root/app/build/outputs/apk/debug/파일이름.apk
 - 안드로이드 에 apk 설치할때 run 에 만들어진 파일은 설치가 안된다.
 
 ## 앱 빌드 타입별 환경 설정.
 
-- Build Variants 에서 빌드 타입을 변경할수 있다.
+- Build Variants 에서 빌드 타입을 변경할 수 있다.
+
+### BuildConfig 파일 생성.
+
+- 최신 안드로이드 스튜디오에서 프로젝트 생성후 BuildConfig 파일이 생성이 안될 수 있다.
+- root/app/build.gradle 안에서 처리.
+
+~~~ kotlin
+android {
+    ...
+    buildFeatures {
+        // 파일 생성.
+        buildConfig true
+    }
+}    
+~~~
+
+- root/gradle.properties 안에서 처리.
+
+~~~ kotlin
+android.defaults.buildfeatures.buildconfig=true # buildConfig 파일 생성 
+~~~
 
 ### 빌드 타입별 서버 정보 변경
 
 - buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
-- 빌드 타입별로 필요한 환경변수들을 넣을수있다.(public static class 대체 가능.)
+- 빌드 타입별로 필요한 환경변수들을 넣을 수 있다.전역변수 대체 가능(public static class 대체 가능.)
 
 ~~~ kotlin
 android {
@@ -323,7 +362,7 @@ android {
 
 ### 빌드 타입별 앱 이름 변경
 
-- AndroidMeifest.xml 안에 android:label="${applicationLabel}" 변경
+- AndroidManifest.xml 안에 android:label="${applicationLabel}" 변경
 
 ~~~ kotlin
 android {
@@ -332,14 +371,54 @@ android {
     
         release {
             manifestPlaceholders = [appLabel: "releaseApp"]
+            // string.xml에 정의한 이름으로 변경가능.
+            // manifestPlaceholders.put("applicationLabel", "@string/app_name")
         }
         
         debug {
             manifestPlaceholders = [appLabel: "debugApp"]
+            // string.xml에 정의한 이름으로 변경가능.
+            // manifestPlaceholders.put("applicationLabel", "@string/app_name")
         }
     }       
 }
 ~~~
+
+### Dependencies add
+
+- 빌드 종속 항목추가 https://developer.android.com/studio/build/dependencies?hl=ko
+
+#### root/app/build.gradle
+
+~~~ kotlin
+plugins {
+  id 'com.android.application'
+}
+
+android { ... }
+
+dependencies {
+    // 라이브러리 모듈 등록
+    // root/settings.gradle 안에 모듈을 include 한다.
+    //include 'myLibrary'
+    // Dependency on a local library module
+    implementation project(':mylibrary')
+
+    // 라이브러리 모듈을 빌드하여 jar, aar 파일오 만들었을 경우. root/app/libs/ 폴더 안에 파일을 넣는다.
+    // Dependency on local binaries
+    // implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar','&*.aar'])
+
+    // 원격 바이너리 종속 항목 추가.
+    // Dependency on a remote binary
+    implementation 'com.example.android:app-magic:12.3'
+}
+~~~
+
+#### Firebase 구성 파일 추가
+
+- 최신 버전에 따른 fcm 사용 https://firebase.google.com/docs/android/setup?authuser=0&%3Bhl=ko&hl=ko
 
 compileSdk, targetSdk, minSdk
 
