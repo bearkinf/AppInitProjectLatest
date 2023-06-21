@@ -286,7 +286,6 @@ android {
 }    
 ~~~
 
-
 ## 앱 빌드 타입별 환경 설정.
 
 - Build Variants 에서 빌드 타입을 변경할 수 있다.
@@ -339,6 +338,7 @@ android {
 - run : root/app/build/intermediates/apk/debug/파일이름.apk
 - Rebuild Project : root/app/build/outputs/apk/debug/파일이름.apk
 - 안드로이드 에 apk 설치할때 run 에 만들어진 파일은 설치가 안된다.
+
 ### 빌드 타입별 서버 정보 변경
 
 - buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
@@ -384,9 +384,9 @@ android {
 }
 ~~~
 
-## Dependencies add
+## Gladle setting & dependencies add
 
-- 빌드 종속 항목추가 https://developer.android.com/studio/build/dependencies?hl=ko
+- 빌드 종속 항목 추가 https://developer.android.com/studio/build/dependencies?hl=ko
 
 ### root/app/build.gradle
 
@@ -419,6 +419,38 @@ dependencies {
 ### Firebase 구성 파일 추가
 
 - 최신 버전에 따른 fcm 사용 https://firebase.google.com/docs/android/setup?authuser=0&%3Bhl=ko&hl=ko
+- gradle 환경마다 다를 수 있다.
+
+#### root/build.gradle
+
+- 최초 빌드 시 생성된 build.gradle
+
+~~~ kotlin
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
+}
+~~~
+
+- 수정되는 root/build.gradle
+- https://jgeun97.tistory.com/202 내용 참고
+
+~~~ kotlin
+buildscript {
+    dependencies {
+        // Add the dependency for the Google services Gradle plugin
+        classpath 'com.google.gms:google-services:4.3.15'
+    }
+}
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
+}
+~~~
 
 compileSdk, targetSdk, minSdk
 
