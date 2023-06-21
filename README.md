@@ -286,33 +286,6 @@ android {
 }    
 ~~~
 
-## 앱 파일 빌드 이름 생성
-
-- root/app/build.gradle 안 android{} 구문안에 삽입
-
-~~~ kotlin
-android {
-    ...
-    applicationVariants.all { variant ->
-
-        variant.outputs.all {
-            // def date = new Date()
-            def formatterDayDate = new Date().format('yyyyMMdd')
-            outputFileName = "${parent.project.getName()}-v${variant.versionName}-${formatterDayDate}-${variant.buildType.name}.apk"
-            // parent.project.getName() = rootProject.name() //settings.gradle 안에 있음.
-            // -v${variant.versionName} = android{ defaultConfig{}} 안에 versionName
-            // formatteDaydDate = def 파일 변수 이름.
-            // variant.buildType.name = android{ buildTpes{ }} 안에 빌드되는 타입이름.
-     
-        }
-    }
-}    
-~~~
-
-- run 과 build-> Rebuild Project 할때 위치가 다르다.
-- run : root/app/build/intermediates/apk/debug/파일이름.apk
-- Rebuild Project : root/app/build/outputs/apk/debug/파일이름.apk
-- 안드로이드 에 apk 설치할때 run 에 만들어진 파일은 설치가 안된다.
 
 ## 앱 빌드 타입별 환경 설정.
 
@@ -339,6 +312,33 @@ android {
 android.defaults.buildfeatures.buildconfig=true # buildConfig 파일 생성 
 ~~~
 
+### 앱 파일 빌드 이름 생성
+
+- root/app/build.gradle 안 android{} 구문안에 삽입
+
+~~~ kotlin
+android {
+    ...
+    applicationVariants.all { variant ->
+
+        variant.outputs.all {
+            // def date = new Date()
+            def formatterDayDate = new Date().format('yyyyMMdd')
+            outputFileName = "${parent.project.getName()}-v${variant.versionName}-${formatterDayDate}-${variant.buildType.name}.apk"
+            // parent.project.getName() = rootProject.name() //settings.gradle 안에 있음.
+            // -v${variant.versionName} = android{ defaultConfig{}} 안에 versionName
+            // formatteDaydDate = def 파일 변수 이름.
+            // variant.buildType.name = android{ buildTpes{ }} 안에 빌드되는 타입이름.
+     
+        }
+    }
+}    
+~~~
+
+- run 과 build-> Rebuild Project 할때 위치가 다르다.
+- run : root/app/build/intermediates/apk/debug/파일이름.apk
+- Rebuild Project : root/app/build/outputs/apk/debug/파일이름.apk
+- 안드로이드 에 apk 설치할때 run 에 만들어진 파일은 설치가 안된다.
 ### 빌드 타입별 서버 정보 변경
 
 - buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
@@ -362,7 +362,7 @@ android {
 
 ### 빌드 타입별 앱 이름 변경
 
-- AndroidManifest.xml 안에 android:label="${applicationLabel}" 변경
+- AndroidManifest.xml 안에 android:label="${appLabel}" 변경
 
 ~~~ kotlin
 android {
@@ -372,23 +372,23 @@ android {
         release {
             manifestPlaceholders = [appLabel: "releaseApp"]
             // string.xml에 정의한 이름으로 변경가능.
-            // manifestPlaceholders.put("applicationLabel", "@string/app_name")
+            // manifestPlaceholders.put("appLabel", "@string/app_name")
         }
         
         debug {
             manifestPlaceholders = [appLabel: "debugApp"]
             // string.xml에 정의한 이름으로 변경가능.
-            // manifestPlaceholders.put("applicationLabel", "@string/app_name")
+            // manifestPlaceholders.put("appLabel", "@string/app_name")
         }
     }       
 }
 ~~~
 
-### Dependencies add
+## Dependencies add
 
 - 빌드 종속 항목추가 https://developer.android.com/studio/build/dependencies?hl=ko
 
-#### root/app/build.gradle
+### root/app/build.gradle
 
 ~~~ kotlin
 plugins {
@@ -408,7 +408,7 @@ dependencies {
     // Dependency on local binaries
     // implementation fileTree(dir: 'libs', include: ['*.jar'])
     // implementation fileTree(dir: 'libs', include: ['*.aar'])
-    implementation fileTree(dir: 'libs', include: ['*.jar','&*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
 
     // 원격 바이너리 종속 항목 추가.
     // Dependency on a remote binary
@@ -416,7 +416,7 @@ dependencies {
 }
 ~~~
 
-#### Firebase 구성 파일 추가
+### Firebase 구성 파일 추가
 
 - 최신 버전에 따른 fcm 사용 https://firebase.google.com/docs/android/setup?authuser=0&%3Bhl=ko&hl=ko
 
