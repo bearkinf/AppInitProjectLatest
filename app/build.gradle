@@ -16,6 +16,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+
+        //파일 생성이름.
+//        archivesBaseName = "${applicationId}-v${versionName}(${versionCode})"
+        archivesBaseName = "${parent.project.getName()}-v${versionName}(${versionCode})"
+
     }
 
     buildTypes {
