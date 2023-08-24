@@ -57,19 +57,19 @@ android {
     }
 
 
-    applicationVariants.all { variant ->
-
-        variant.outputs.all {
-            // def date = new Date()
-            def formatterDayDate = new Date().format('yyyyMMdd')
-            outputFileName = "${parent.project.getName()}-v${variant.versionName}-${formatterDayDate}-${variant.buildType.name}.apk"
-            // parent.project.getName() = rootProject.name() //settings.gradle 안에 있음.
-            // -v${variant.versionName} = android{ defaultConfig{}} 안에 versionName
-            // formatterDayDate = def 파일 변수 이름.
-            // variant.buildType.name = android{ buildTpes{ }} 안에 빌드되는 타입이름.
-
-        }
-    }
+//    applicationVariants.all { variant ->
+//
+//        variant.outputs.all {
+//            // def date = new Date()
+//            def formatterDayDate = new Date().format('yyyyMMdd')
+//            outputFileName = "${parent.project.getName()}-v${variant.versionName}-${formatterDayDate}-${variant.buildType.name}.apk"
+//            // parent.project.getName() = rootProject.name() //settings.gradle 안에 있음.
+//            // -v${variant.versionName} = android{ defaultConfig{}} 안에 versionName
+//            // formatterDayDate = def 파일 변수 이름.
+//            // variant.buildType.name = android{ buildTpes{ }} 안에 빌드되는 타입이름.
+//
+//        }
+//    }
 
     buildFeatures {
         // 파일 생성.

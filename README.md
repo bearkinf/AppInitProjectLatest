@@ -5,17 +5,17 @@
         - [root/build.gradle](#rootbuildgradle)
         - [root/app/build.gradle](#rootappbuildgradle)
     - [multiDexEnabled true](#multidexenabled-true)
-    - [앱 파일 빌드 이름 생성](#앱-파일-빌드-이름-생성)
     - [앱 빌드 타입별 환경 설정.](#앱-빌드-타입별-환경-설정)
-        - [buildConfig 파일 생성.](#buildconfig-파일-생성)
+        - [BuildConfig 파일 생성.](#buildconfig-파일-생성)
+        - [앱 파일 빌드 이름 생성](#앱-파일-빌드-이름-생성)
         - [빌드 타입별 서버 정보 변경](#빌드-타입별-서버-정보-변경)
         - [빌드 타입별 앱 이름 변경](#빌드-타입별-앱-이름-변경)
-        - [Dependencies add](#dependencies-add)
-            - [root/app/build.gradle](#rootappbuildgradle-1)
-            - [Firebase 구성 파일 추가](#firebase-구성-파일-추가)
+    - [Gladle setting \& dependencies add](#gladle-setting--dependencies-add)
+        - [root/app/build.gradle](#rootappbuildgradle-1)
+        - [Firebase 구성 파일 추가](#firebase-구성-파일-추가)
+            - [root/build.gradle](#rootbuildgradle-1)
 
 # Android App Build Description Project
-
 ---
 
 * 앱 최신 버전에 따른 빌드 확인.
@@ -26,7 +26,7 @@
 
 - 안드로이드 기본 .gitignore 사용하지 않음.
 
-~~~ kotlin
+``` kotlin   
 # android create gitignore
 #*.iml
 #.gradle
@@ -43,14 +43,13 @@
 #.externalNativeBuild
 #.cxx
 #local.properties
-~~~
+```
 
 - 안드로이드 프로젝트에 커스텀된 .gitignore
 - #Keystore files 추가하기 위해서 주석처리함.
-- #*.jks
-- #*.keystore
+- #*.jks, #*.keystore
 
-~~~ kotlin
+``` kotlin
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
 
@@ -188,11 +187,13 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio
-~~~
+```
 
 ### root/settings.gradle
 
-~~~ kotlin
+- 앱 최초 기본 생성
+
+``` kotlin
 pluginManagement {
     repositories {
         google()
@@ -209,22 +210,30 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AppInitProjectLatest"
 include ':app'
-~~~
+```
 
 ### root/build.gradle
 
-~~~ kotlin
+- 앱 최초 기본 생성
+
+``` kotlin
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '8.0.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
 }
-~~~
+```
 
 ### root/app/build.gradle
 
-~~~ kotlin
+- 앱 최초 기본 생성
+- 추가 항목 확인 해야함.
+- Build Variants
+- buildTypes - debug
+- buildFeatures -viewBinding, dataBinding, buildConfig ....
+
+``` kotlin
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -269,14 +278,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
-~~~
+```
 
 ## multiDexEnabled true
 
+- defaultConfig 안에 추가 확인.
 - 메서드가 64K개를 초과하는 앱에 관해 멀티덱스 사용 설정
 - https://developer.android.com/studio/build/multidex?hl=ko
 
-~~~ kotlin
+``` kotlin
 android {
     ...
     defaultConfig {
@@ -284,18 +294,14 @@ android {
         multiDexEnabled true
     }
 }    
-~~~
-
-## 앱 빌드 타입별 환경 설정.
-
-- Build Variants 에서 빌드 타입을 변경할 수 있다.
+```
 
 ### BuildConfig 파일 생성.
 
 - 최신 안드로이드 스튜디오에서 프로젝트 생성후 BuildConfig 파일이 생성이 안될 수 있다.
 - root/app/build.gradle 안에서 처리.
 
-~~~ kotlin
+``` kotlin
 android {
     ...
     buildFeatures {
@@ -303,21 +309,54 @@ android {
         buildConfig true
     }
 }    
-~~~
+```
+
+or
 
 - root/gradle.properties 안에서 처리.
 
-~~~ kotlin
+``` kotlin
 android.defaults.buildfeatures.buildconfig=true # buildConfig 파일 생성 
-~~~
+```
+
+## 앱 빌드 타입별 환경 설정.
+
+- Build Variants 에서 빌드 타입을 변경할 수 있다.
+
+### 빌드 타입별 앱 패키지 변경
+
+- applicationIdSuffix '.debug'
+
+``` kotlin
+android {
+    ...
+    buildTypes {
+    
+        release {
+          applicationIdSuffix '.release'
+        }
+        
+        debug {
+          applicationIdSuffix '.debug'
+        }
+    }       
+}
+```
 
 ### 앱 파일 빌드 이름 생성
 
 - root/app/build.gradle 안 android{} 구문안에 삽입
 
-~~~ kotlin
+``` kotlin
 android {
     ...
+    
+     defaultConfig {
+     ...
+        //파일 생성이름.
+        archivesBaseName = "${parent.project.getName()}-v${versionName}(${versionCode})"
+    }
+    // or gradle 버전 확인 후 이름 생성확인.
     applicationVariants.all { variant ->
 
         variant.outputs.all {
@@ -332,7 +371,7 @@ android {
         }
     }
 }    
-~~~
+```
 
 - run 과 build-> Rebuild Project 할때 위치가 다르다.
 - run : root/app/build/intermediates/apk/debug/파일이름.apk
@@ -342,9 +381,9 @@ android {
 ### 빌드 타입별 서버 정보 변경
 
 - buildConfigField "String", "BASE_URL", "\"https://www.daum.net\""
-- 빌드 타입별로 필요한 환경변수들을 넣을 수 있다.전역변수 대체 가능(public static class 대체 가능.)
+- 빌드 타입 별로 필요한 환경 변수들을 넣을 수 있다.전역 변수 대체 가능(public static class 대체 가능.)
 
-~~~ kotlin
+``` kotlin
 android {
     ...
     buildTypes {
@@ -358,13 +397,13 @@ android {
         }
     }        
 }    
-~~~
+```
 
 ### 빌드 타입별 앱 이름 변경
 
 - AndroidManifest.xml 안에 android:label="${appLabel}" 변경
 
-~~~ kotlin
+``` kotlin
 android {
     ...
     buildTypes {
@@ -382,7 +421,7 @@ android {
         }
     }       
 }
-~~~
+```
 
 ## Gladle setting & dependencies add
 
@@ -390,7 +429,7 @@ android {
 
 ### root/app/build.gradle
 
-~~~ kotlin
+``` kotlin
 plugins {
   id 'com.android.application'
 }
@@ -406,7 +445,6 @@ dependencies {
 
     // 라이브러리 모듈을 빌드하여 jar, aar 파일오 만들었을 경우. root/app/libs/ 폴더 안에 파일을 넣는다.
     // Dependency on local binaries
-    // implementation fileTree(dir: 'libs', include: ['*.jar'])
     // implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
 
@@ -414,30 +452,35 @@ dependencies {
     // Dependency on a remote binary
     implementation 'com.example.android:app-magic:12.3'
 }
-~~~
+```
+
+// 추가 작업중.
 
 ### Firebase 구성 파일 추가
 
 - 최신 버전에 따른 fcm 사용 https://firebase.google.com/docs/android/setup?authuser=0&%3Bhl=ko&hl=ko
+  or https://firebase.google.com/docs/android/setup?hl=ko&authuser=0
 - gradle 환경마다 다를 수 있다.
 
 #### root/build.gradle
 
 - 최초 빌드 시 생성된 build.gradle
 
-~~~ kotlin
+``` kotlin
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '8.0.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
 }
-~~~
+```
+
+after
 
 - 수정되는 root/build.gradle
 - https://jgeun97.tistory.com/202 내용 참고
 
-~~~ kotlin
+``` kotlin
 buildscript {
     dependencies {
         // Add the dependency for the Google services Gradle plugin
@@ -450,14 +493,51 @@ plugins {
     id 'com.android.library' version '8.0.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
 }
-~~~
+```
 
-compileSdk, targetSdk, minSdk
+### root/app/build.gradle
 
-순서...
+- 구글서비스 등록.
+- 라이브러리 등록.
 
-gradle 설정.   
-앱 빌드(디버그,릴리즈) 설정.
+``` kotlin
+plugins {
+    ...
+    id 'com.google.gms.google-services'
+}
 
-dependencies 추가.    
- 
+dependencies {
+    ...
+    //FCM library
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging:23.1.2'
+}
+```
+or
+- ktx 방식
+``` kotlin
+dependencies {
+  // ...
+
+  // Import the Firebase BoM
+  implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+
+  // When using the BoM, you don't specify versions in Firebase library dependencies
+
+  // Add the dependency for the Firebase SDK for Google Analytics
+  implementation("com.google.firebase:firebase-analytics-ktx")
+
+  // TODO: Add the dependencies for any other Firebase products you want to use
+  // See https://firebase.google.com/docs/android/setup#available-libraries
+  // For example, add the dependencies for Firebase Authentication and Cloud Firestore
+  implementation("com.google.firebase:firebase-auth-ktx")
+  implementation("com.google.firebase:firebase-firestore-ktx")
+}
+
+```
+
+### FCMService 파일 추가.
+- FCM 서비스 파일 추가.
