@@ -21,7 +21,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        TestApiService.service.listRepos("bexcvbf")
+        TestApiService.service.listRepos("bearkinf")
+            .concatMap {
+                Log.v("bear", "it ${it}")
+                TestApiService.service.listRepos("fdsavzcx fsadfsx")
+                    .map {
+                        "bearfdhsajk"
+                    }
+            }
+            .concatMap {
+                Log.v("bear", "it ${it}")
+                TestApiService.service.listRepos("bearkinf")
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
