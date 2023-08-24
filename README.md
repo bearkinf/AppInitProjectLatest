@@ -49,7 +49,7 @@
 - #Keystore files 추가하기 위해서 주석처리함.
 - #*.jks, #*.keystore
 
-``` kotlin
+```md
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
 
