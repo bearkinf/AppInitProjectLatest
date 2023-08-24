@@ -518,6 +518,7 @@ dependencies {
 ```
 or
 - ktx 방식
+- https://firebase.google.com/docs/android/setup?hl=ko&authuser=0
 ``` kotlin
 dependencies {
   // ...
@@ -535,9 +536,26 @@ dependencies {
   // For example, add the dependencies for Firebase Authentication and Cloud Firestore
   implementation("com.google.firebase:firebase-auth-ktx")
   implementation("com.google.firebase:firebase-firestore-ktx")
+  implementation("com.google.firebase:firebase-messaging-ktx")
+  	 
 }
-
 ```
+
+### AndroidManifest.xml 추가.
+- 서비스 등록
+``` kotlin
+    <application>
+        <service
+            android:name=".api.FCMService"
+            android:exported="false"
+            android:permission="android.permission.INTERNET"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>
+``` 
 
 ### FCMService 파일 추가.
 - FCM 서비스 파일 추가.
