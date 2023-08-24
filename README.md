@@ -103,8 +103,8 @@ captures/
 
 ## Custom commit 
 # Keystore files
-#*.jks
-#*.keystore
+# *.jks
+# *.keystore
 
 # Google Services (e.g. APIs or Firebase)
 # google-services.json
