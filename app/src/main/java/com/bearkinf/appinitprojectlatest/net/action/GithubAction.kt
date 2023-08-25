@@ -12,12 +12,12 @@ object GithubAction {
         CompositeDisposable()
     }
 
+    // by lazy 를 안하면 바로 disposable 된다.
+    // 함수 사용 또는 by lazy
     val clearDisposable by lazy {
-        Log.v("bear","call Disposable")
+        Log.v("bear", "call Disposable")
         disposable.dispose()
     }
-
-//    fun runDisposable() = disposable.dispose()
 
     fun getUserRepos(
         user: String, callback: ((success: Boolean, msg: String?) -> Unit)? = null
@@ -36,5 +36,24 @@ object GithubAction {
             }
     }
 
+    //lambda 식 으로 구현.
+    fun getUserRepos2(
+        user: String,
+        success: ((msg: String?) -> Unit)? = null,
+        fail: ((throwable: String?) -> Unit)? = null
+    ) {
+        Log.w("bear", "getUserRepos")
+        TestApiService.service.listRepos(user)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                success?.invoke(it)
+            }, {
+                fail?.invoke(it.message)
+            })
+            .let {
+                disposable.add(it)
+            }
+    }
 
 }

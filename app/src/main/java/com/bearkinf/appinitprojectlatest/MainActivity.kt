@@ -14,16 +14,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        GithubAction.getUserRepos("bearkinf") { success, msg ->
-            if (success) {
+//        GithubAction.getUserRepos("bearkinf") { success, msg ->
+//            if (success) {
+//
+//                Log.e("bear", "success : $msg")
+//            } else {
+//                Log.w("bear", "fail : $msg")
+//                errorDialog(msg)
+//            }
+//        }
 
-                Log.e("bear", "success : $msg")
-            } else {
-                Log.w("bear", "fail : $msg")
-                errorDialog(msg)
-            }
-        }
-
+        GithubAction.getUserRepos2("bearfdaszcxkinf", {
+            Log.e("bear", "success : $it")
+        }, {
+            Log.w("bear", "fail : $it")
+            errorDialog(it)
+        });
 
 //        TestApiService.service.listRepos("bearkinf")
 //            .subscribeOn(Schedulers.io())
