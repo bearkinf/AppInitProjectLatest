@@ -23,13 +23,45 @@ class MainActivity : AppCompatActivity() {
 //                errorDialog(msg)
 //            }
 //        }
-
-        GithubAction.getUserRepos2("bearfdaszcxkinf", {
+        GithubAction.getUserRepos2("bearkinf", {
             Log.e("bear", "success : $it")
         }, {
             Log.w("bear", "fail : $it")
             errorDialog(it)
         });
+        GithubAction.getUserRepos2("bearkinf", {
+            Log.e("bear", "success : $it")
+        }, {
+            Log.w("bear", "fail : $it")
+            errorDialog(it)
+        });
+        GithubAction.getUserRepos2("bearkinf", {
+            Log.e("bear", "success : $it")
+        }, {
+            Log.w("bear", "fail : $it")
+            errorDialog(it)
+        });
+
+//
+//        GithubAction.getUserRepos3("bearkinf", {
+//            Log.e("bear", "success : $it")
+//        }, {
+//            Log.w("bear", "fail : $it")
+//            errorDialog(it)
+//        });
+//        GithubAction.getUserRepos3("bearkinf", {
+//            Log.e("bear", "success : $it")
+//        }, {
+//            Log.w("bear", "fail : $it")
+//            errorDialog(it)
+//        });
+//        GithubAction.getUserRepos3("bearkinf", {
+//            Log.e("bear", "success : $it")
+//        }, {
+//            Log.w("bear", "fail : $it")
+//            errorDialog(it)
+//        });
+
 
 //        TestApiService.service.listRepos("bearkinf")
 //            .subscribeOn(Schedulers.io())

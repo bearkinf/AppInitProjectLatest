@@ -61,7 +61,19 @@ dependencies {
 
 ## 클래스 생성 방법
 
-### object 방식
-
 ### interface 방식
 
+- 레트로핏에 필요한 서비스 interface 안에 구현한다.
+- interface class 안에 동반객체 생성을 사용하여 레트로핏을 구현한다.
+- 함수호출시 유용하다고 판단된다.
+- 다형성 보다는 단독 구현 실행.
+
+### object 방식
+
+- Object class 싱글턴 형식을 구현할 수 있다.
+- 레트로핏에 필요한 서비스 interface를 따로 구현해야한다.
+- 추상 : api service interface 가 많으면 제네릭스를 사용하여 여러 인터페이스 구현이 가능하다.
+- 다형성 사용을위한 구성이 가능한듯.
+
+
+## lambda 식 콜백 처리.

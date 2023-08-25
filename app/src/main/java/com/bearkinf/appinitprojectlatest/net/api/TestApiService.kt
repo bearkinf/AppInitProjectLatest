@@ -1,5 +1,6 @@
 package com.bearkinf.appinitprojectlatest.net.api
 
+import android.util.Log
 import io.reactivex.rxjava3.core.Single
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -26,13 +27,38 @@ interface TestApiService {
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
 
-        private val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(httpClient)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        private val retrofit: Retrofit =
+            Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(httpClient)
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+//        private fun httpClient(): OkHttpClient {
+//            Log.e("bear", "fun httpClient")
+//            return OkHttpClient.Builder()
+//                // Timeout check
+//                .readTimeout(30, TimeUnit.SECONDS)
+//                .writeTimeout(30, TimeUnit.SECONDS)
+//                .connectTimeout(10, TimeUnit.SECONDS)
+//                .build()
+////
+//        }
+//
+//        private fun rettt(): Retrofit {
+//            Log.e("bear", "fun rettt")
+//
+//            return Retrofit.Builder()
+//                .baseUrl(BASE_URL)
+//                .client(httpClient())
+//                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+//                .addConverterFactory(ScalarsConverterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build()
+//        }
+
 
         val service: TestApiService = retrofit.create(TestApiService::class.java)
 
