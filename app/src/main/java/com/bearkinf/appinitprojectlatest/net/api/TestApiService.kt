@@ -27,7 +27,7 @@ interface TestApiService {
             .build()
 
         private val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(TestApiService.BASE_URL)
+            .baseUrl(BASE_URL)
             .client(httpClient)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
