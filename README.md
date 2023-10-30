@@ -356,6 +356,14 @@ android {
         //파일 생성이름.
         archivesBaseName = "${parent.project.getName()}-v${versionName}(${versionCode})"
     }
+    or
+    java 
+        def date = new Date()
+        def formattedDate = date.format('yyyyMMddHHmmss')
+        setProperty("archivesBaseName", "${parent.project.getName()}-v${versionName}(${versionCode})-${formattedDate}")
+
+    
+    
     // or gradle 버전 확인 후 이름 생성확인.
     applicationVariants.all { variant ->
 
